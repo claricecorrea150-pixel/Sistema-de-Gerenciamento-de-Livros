@@ -1,0 +1,72 @@
+<h1>Sistema de Gerenciamento de Livros (Biblioteca Pessoal)</h1>
+<input type="text" placeholder="digite o Título do Livro" id="TítulodoLivro">
+<input type="text" placeholder="digite o Nome do Autor" id="NomedoAutor">
+<button onclick="cadastrar()">cadastrar</button>
+<button onclick="visualizar()">Visualizar</button>
+<div id="lista"></div>
+
+<script>
+    let _livros = JSON.parse(localStorage.getItem('livros')) || []
+
+    function cadastrar () {
+        let TítulodoLivro = document.getElementById('TítulodoLivro').value
+        let NomedoAutor = document.getElementById('NomedoAutor').value
+        
+        let livro = {
+            'TítulodoLivro': TítulodoLivro,
+            NomedoAutor
+        }
+        
+        let existe = false
+        _livros.forEach((livro) => {
+            if (TítulodoLivro === livro.TítulodoLivro) {
+                existe = true
+            }
+        })
+        
+        if (existe) {
+            alert('livro ja existe')
+        } else {
+            _livros.push(livro)
+            localStorage.setItem('livros', JSON.stringify(_livros))
+        }       
+    }
+
+    function visualizar() {
+        let lista = document.getElementById('lista')
+        lista.innerHTML = ''
+
+        _livros.forEach((livro, i) => {
+            lista.innerHTML += `Título do Livro: ${livro.TítulodoLivro} <br>
+                <button onclick="deletar(${i})">
+                    deletar
+                </button>
+                <button onclick="editar(${i})">
+                    editar
+                </button>
+                <br><br>
+            `
+        });
+    }
+
+    function editar(i) {
+        let novoTítulodoLivro = prompt('digite o novo Título do Livro', _livros[i].TítulodoLivro)
+        let novaNomedoAutor = prompt('digite a nova Nome do Autor', _livros[i].NomedoAutor)
+
+        if (novoTítulodoLivro){
+            _livros[i].TítulodoLivro = novoTítulodoLivro
+            _livros[i].NomedoAutor = novaNomedoAutor
+
+            visualizar()
+            localStorage.setItem('livros', JSON.stringify(_livros))
+        }
+    }
+
+    function deletar(i) {
+        alert('deletado com sucesso')
+        _livros.splice(i, 1)
+        visualizar()
+        localStorage.setItem('livros', JSON.stringify(_livros))
+    }
+</script>
+    
